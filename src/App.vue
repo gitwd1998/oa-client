@@ -1,29 +1,78 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <el-config-provider :locale="zh_cn" :button="buttonConfig" :size="size">
+    <router-view></router-view>
+  </el-config-provider>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script setup>
+import { onMounted, reactive, ref } from 'vue'
+import zh_cn from 'element-plus/dist/locale/zh-cn.mjs'
+// import en from 'element-plus/dist/locale/en.mjs'
+
+const buttonConfig = reactive({
+  autoInsertSpace: true
+})
+const size = ref('')
+
+const setSize = () => {
+  if (window.innerWidth < 1200) {
+    size.value = 'small'
+  } else if (window.innerWidth < 1920) {
+    size.value = 'default'
+  } else {
+    size.value = 'large'
+  }
 }
 
-nav {
-  padding: 30px;
+onMounted(() => {
+  setSize()
+  window.addEventListener('resize', () => {
+    setSize()
+  })
+})
+</script>
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+<style lang="scss">
+html, body, #app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  // min-width: 1180px;
+}
+#app {
+  > .el-container {
+    height: 100%;
+    > .el-header {
+      background-color: var(--el-color-primary);
+    }
+    > .el-container {
+      height: 100%;
+      overflow: hidden;
+      > .el-aside {
+        height: 100%;
+        overflow: auto;
+      }
+    }
+  }
+  .scroll-wrap {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    > .search-wrop {
+      padding-bottom: 10px;
+    }
+    > .operate-wrap {
+      padding-bottom: 10px;
+    }
+    > .table-wrap {
+      flex: 1;
+      overflow: hidden;
+    }
+    > .pagination-wrap {
+      padding-top: 10px;
+      display: flex;
+      justify-content: flex-end;
     }
   }
 }
