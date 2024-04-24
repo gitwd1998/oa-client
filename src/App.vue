@@ -25,6 +25,7 @@ const setSize = () => {
 }
 
 onMounted(() => {
+  console.log(process.env)
   setSize()
   window.addEventListener('resize', () => {
     setSize()
