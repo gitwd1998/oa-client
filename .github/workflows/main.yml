@@ -19,18 +19,27 @@ jobs:
           
       - name: Install npm dependencies
         run: npm install
+
+      - name: echa ${{github.event_name}}
+        run: echa ${{github.event_name}}
+
+      - name: echa ${{github.ref}}
+        run: echa ${{github.ref}}
         
-      - name: Run test task
-        if: ${{ needs.determine-environment.outputs.selected-stage == 'test' }}
-        run: npm run test
+      - name: echa ${{github.ref_name}}
+        run: echa ${{github.ref_name}}
+        
+      # - name: Run test task
+      #   # if: ${{ needs.determine-environment.outputs.selected-environment == 'test' }}
+      #   run: npm run test
 
-      - name: Run uat task
-        if: ${{ needs.determine-environment.outputs.selected-stage == 'uat' }}
-        run: npm run uat
+      # - name: Run uat task
+        # if: ${{ needs.determine-environment.outputs.selected-environment == 'uat' }}
+        # run: npm run uat
 
-      - name: Run build task
-        if: ${{ needs.determine-environment.outputs.selected-stage == 'production' }}
-        run: npm run build
+      # - name: Run build task
+        # if: ${{ needs.determine-environment.outputs.selected-environment == 'production' }}
+        # run: npm run build
         
       - name: Deploy to Server
         uses: cross-the-world/scp-pipeline@master
