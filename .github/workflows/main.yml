@@ -1,0 +1,46 @@
+name: Build app and deploy to aliyun
+on:
+  push:
+    branches:
+      - test
+      - uat
+      - main
+  pull_request:
+    branch:
+      - test
+      - uat
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+          
+      - name: Install npm dependencies
+        run: npm install
+        
+      - name: Run test task
+        if: ${{ github.ref_name == 'test' }}
+        run: npm run test
+
+      - name: Run uat task
+        if: ${{ github.ref_name == 'uat' }}
+        run: npm run uat
+
+      - name: Run build task
+        if: ${{ github.ref_name == 'main' }}
+        run: npm run build
+        
+      - name: Deploy to Server
+        uses: cross-the-world/scp-pipeline@master
+        env:
+          WELCOME: "ssh scp ssh pipelines"
+          LASTSSH: "Doing something after copying"
+        with:
+          host: ${{ secrets.USER_HOST }}
+          user: ${{ secrets.USER_NAME }}
+          pass: ${{ secrets.USER_PASS }}
+          connect_timeout: 10s
+          local: './dist/*'
+          remote: /home/app/web/vue3
