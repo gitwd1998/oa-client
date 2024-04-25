@@ -36,17 +36,17 @@ module.exports = defineConfig({
       )
     }
     // 接入sentry
-    // if (process.env.NODE_ENV === 'production') {
-    //   config.devtool = 'source-map'
-    //   const { sentryWebpackPlugin } = require('@sentry/webpack-plugin')
-    //   config.plugins.push(
-    //     sentryWebpackPlugin({
-    //       org: 'gitwd1998',
-    //       project: 'vue3',
-    //       authToken: '11212edbe6d34e66ba00b06a8243a13e96493b3cb45c476496ac1dfc3968dfdc'
-    //     })
-    //   )
-    // }
+    if (process.env.NODE_ENV === 'production') {
+      config.devtool = 'source-map'
+      const { sentryWebpackPlugin } = require('@sentry/webpack-plugin')
+      config.plugins.push(
+        sentryWebpackPlugin({
+          org: 'gitwd1998',
+          project: 'oa-client',
+          authToken: '11212edbe6d34e66ba00b06a8243a13e96493b3cb45c476496ac1dfc3968dfdc'
+        })
+      )
+    }
   },
   
   chainWebpack(config) {
