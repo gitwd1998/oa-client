@@ -7,7 +7,8 @@
     "build": "vue-cli-service build",
     "test": "vue-cli-service build --mode test",
     "uat": "vue-cli-service build --mode uat",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "commitlint": "commitlint --edit"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
@@ -25,6 +26,8 @@
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
@@ -57,5 +60,13 @@
     "last 2 versions",
     "not dead",
     "not ie 11"
-  ]
+  ],
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "gitHooks": {
+    "commit-msg": "npm run commitlint"
+  }
 }
