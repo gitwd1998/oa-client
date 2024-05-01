@@ -4,16 +4,16 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: ${{github.ref_name}}
+    environment: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v2
-          
+
       - name: Install npm dependencies
         run: npm install
-        
-      - name: Run ${{vars.NPM_RUN}} task
-        run: npm run ${{vars.NPM_RUN}}
-        
+
+      - name: Run ${{ vars.NPM_RUN }} task
+        run: npm run ${{ vars.NPM_RUN }}
+
       - name: Deploy to Server
         uses: cross-the-world/scp-pipeline@master
         env:

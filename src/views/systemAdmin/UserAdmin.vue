@@ -1,7 +1,7 @@
 <template>
   <div class="scroll-wrap">
     <div class="search-wrap">
-      <el-form ref="searchFormRef" :model="searchFormData" inline label-width="auto" label-suffix=":">
+      <el-form ref="searchFormRef" :model="searchFormData" inline>
         <el-form-item label="用户标识" prop="userKey">
           <el-input v-model="searchFormData.userKey" clearable />
         </el-form-item>
@@ -50,16 +50,16 @@
     </div>
     <el-dialog v-model="dialogVisible" :title="dialogTitle">
       <el-form ref="addFormRef" :model="addFormData" :rules="addFormRules" label-width="auto" label-suffix=":">
-        <el-form-item ref="userKey" label="用户标识" prop="userKey">
+        <el-form-item label="用户标识" prop="userKey">
           <el-input v-model="addFormData.userKey" :disabled="!!addFormData.userId" clearable maxlength="100" show-word-limit />
         </el-form-item>
-        <el-form-item ref="userName" label="用户名称" prop="userName">
+        <el-form-item label="用户名称" prop="userName">
           <el-input v-model="addFormData.userName" clearable maxlength="100" show-word-limit />
         </el-form-item>
-        <el-form-item ref="password" label="用户密码" prop="password">
+        <el-form-item label="用户密码" prop="password">
           <el-input v-model="addFormData.password" clearable maxlength="100" show-word-limit />
         </el-form-item>
-        <el-form-item ref="userState" label="启用状态" prop="userState">
+        <el-form-item label="启用状态" prop="userState">
           <el-radio-group v-model="addFormData.userState">
             <el-radio v-for="option in dict.values.status" :key="option.value" :label="option.value">{{ option.label }}</el-radio>
           </el-radio-group>
@@ -109,9 +109,6 @@ export default {
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'none' }
-        ],
-        userState: [
-          { required: true, message: '请选择用户状态', trigger: 'none' }
         ]
       }
     }
@@ -161,6 +158,7 @@ export default {
       this.addFormData = {
         userId: '',
         userKey: '',
+        userName: '',
         userState: '1'
       }
       this.dialogVisible = true
@@ -172,7 +170,7 @@ export default {
       this.dialogVisible = true
     },
     confrimMenu() {
-      this.$refs.addFormRef.validate((valid, fields) => {
+      this.$refs.addFormRef.validate((valid ) => {
         if (valid) {
           console.log(this.addFormDataFormat);
           userSave(this.addFormData).then((res) => {
@@ -183,13 +181,6 @@ export default {
             this.dialogVisible = false
             this.searchData()
           })
-        } else {
-          this.$refs.addFormRef.clearValidate()
-          for (let field in fields) {
-            this.$refs[field].validateState = 'error'
-            this.$message.warning(fields[field][0].message)
-            return
-          }
         }
       })
     },

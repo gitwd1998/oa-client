@@ -1,7 +1,7 @@
 <template>
   <div class="scroll-wrap" v-loading="loading">
     <div class="search-wrap">
-      <el-form :ref="el => refMap.searchFormRef = el" :model="searchFormData" inline label-width="auto" label-suffix=":">
+      <el-form :ref="el => refMap.searchFormRef = el" :model="searchFormData" inline>
         <el-form-item label="字典标识" prop="dictKey">
           <el-input v-model="searchFormData.dictKey" clearable />
         </el-form-item>
@@ -27,7 +27,6 @@
     </div>
     <div class="table-wrap">
       <el-table :data="dictTableData" height="100%" @row-click="rowClick">
-        <el-table-column label="序号" type="index" width="60" align="center" :index="index => dictPageData.pageSize * (dictPageData.pageNum - 1) + index + 1" />
         <el-table-column label="字典标识" prop="dictKey" />
         <el-table-column label="字典名称" prop="dictName" />
         <el-table-column label="标签" prop="dictTag">
@@ -58,17 +57,17 @@
     </div>
   </div>
   <el-dialog v-model="dialogVisible" :title="dialogTitle">
-    <el-form :ref="el => refMap.addDictFormRef = el" :model="addFormData" :rules="addFormRules" label-width="auto" label-suffix=":">
-      <el-form-item :ref="el => refMap.dictKey = el" label="字典标识" prop="dictKey">
+    <el-form :ref="el => refMap.addDictFormRef = el" :model="addFormData" :rules="addFormRules">
+      <el-form-item label="字典标识" prop="dictKey">
         <el-input v-model="addFormData.dictKey" :disabled="!!addFormData.dictId" clearable maxlength="100" show-word-limit />
       </el-form-item>
-      <el-form-item :ref="el => refMap.dictName = el" label="字典名称" prop="dictName">
+      <el-form-item label="字典名称" prop="dictName">
         <el-input v-model="addFormData.dictName" clearable maxlength="100" show-word-limit />
       </el-form-item>
-      <el-form-item :ref="el => refMap.dictTag = el" label="字典标签" prop="dictTag">
+      <el-form-item label="字典标签" prop="dictTag">
         <el-input v-model="addFormData.dictTag" clearable maxlength="100" show-word-limit />
       </el-form-item>
-      <el-form-item :ref="el => refMap.dictState = el" label="启用状态" prop="dictState">
+      <el-form-item label="启用状态" prop="dictState">
         <el-radio-group v-model="addFormData.dictState">
           <el-radio v-for="option in dict.values.status" :key="option.value" :label="option.value">{{ option.label }}</el-radio>
         </el-radio-group>
@@ -79,9 +78,9 @@
       <el-button type="primary" @click="confrimDict">确定</el-button>
     </template>
   </el-dialog>
-  <el-drawer v-model="drawerVisible" :title="drawerTitle" size="60%" @open="queryDictOptionList">
-    <el-form :ref="el => refMap.addDictOptionFormRef = el" :model="dictOptionFormData" :rules="dictOptionFormRules">
-      <el-form-item :ref="el => refMap.dictOptionTableData = el" prop="dictOptionTableData" required>
+  <el-drawer v-model="drawerVisible" :title="drawerTitle" @open="queryDictOptionList">
+    <el-form :ref="el => refMap.addDictOptionFormRef = el" :model="dictOptionFormData" inline-message>
+      <el-form-item prop="dictOptionTableData" :rules="[{ required: true, message: '请添加字典选项', trigger: 'none' }]">
         <el-table class="draggable" :data="dictOptionTableDataFilter" row-key="dictOptionId">
           <el-table-column width="50" align="center">
             <template #header>
@@ -89,24 +88,23 @@
             </template>
             <el-button class="draggable-handle" link icon="Sort" />
           </el-table-column>
-          <el-table-column label="序号" type="index" :index="indexFormat" width="60" align="center" />
           <el-table-column label="键" prop="dictOptionValue">
             <template #default="{ row, column, $index }">
-              <el-form-item :ref="el => refMap[`dictOptionTableData.${indexFormat($index) - 1}.${column.property}`] = el" :prop="`dictOptionTableData.${indexFormat($index) - 1}.${column.property}`">
+              <el-form-item :prop="`dictOptionTableData.${indexFormat($index) - 1}.${column.property}`" :rules="[{ required: true, message: '请输入键', trigger: 'none' }]">
                 <el-input v-model="row.dictOptionValue" clearable show-word-limit maxlength="100" />
               </el-form-item>
             </template>
           </el-table-column>
           <el-table-column label="值" prop="dictOptionLabel">
             <template #default="{ row, column, $index }">
-              <el-form-item :ref="el => refMap[`dictOptionTableData.${indexFormat($index) - 1}.${column.property}`] = el" :prop="`dictOptionTableData.${indexFormat($index) - 1}.${column.property}`">
+              <el-form-item :prop="`dictOptionTableData.${indexFormat($index) - 1}.${column.property}`" :rules="[{ required: true, message: '请输入键', trigger: 'none' }]">
                 <el-input v-model="row.dictOptionLabel" clearable show-word-limit maxlength="100" />
               </el-form-item>
             </template>
           </el-table-column>
           <el-table-column label="启用状态" prop="dictOptionState" width="100">
             <template #default="{ row, column, $index }">
-              <el-form-item :ref="el => refMap[`dictOptionTableData.${indexFormat($index) - 1}.${column.property}`] = el" :prop="`dictOptionTableData.${indexFormat($index) - 1}.${column.property}`">
+              <el-form-item :prop="`dictOptionTableData.${indexFormat($index) - 1}.${column.property}`">
                 <el-switch v-model="row.dictOptionState" inline-prompt active-value="1" inactive-value="0" active-text="启用" inactive-text="禁用" />
               </el-form-item>
             </template>
@@ -150,7 +148,7 @@ export default {
 <script setup>
   import { dictList, dictSave, dictDelete, dictOptionList, dictOptionBatch } from "@/apis/dict";
   import { ElLoading, ElMessage, ElMessageBox } from "element-plus";
-  import { computed, nextTick, onMounted, reactive, ref } from "vue";
+  import { computed, onMounted, reactive, ref } from "vue";
   import Sortable from "sortablejs";
 
   
@@ -180,9 +178,6 @@ export default {
     ],
     dictName: [
       { required: true, message: "请输入字典名称", trigger: "none", transform: (val) => val.trim() }
-    ],
-    dictState: [
-      { required: true, message: "请选择启用状态", trigger: "none" }
     ]
   });
   const dictPageData = reactive({
@@ -193,28 +188,6 @@ export default {
   const dictTableData = ref([]);
   const dictOptionFormData = reactive({
     dictOptionTableData: []
-  });
-  const dictOptionFormRules = reactive({
-    dictOptionTableData: {
-      type: "array",
-      required: true,
-      options: { first: true },
-      message: "字典选项不能为空",
-      trigger: "none",
-      defaultField: {
-        type: "object",
-        required: false,
-        options: { first: true },
-        fields: {
-          dictOptionValue: [
-            { required: true, message: "请输入键", trigger: "none" }
-          ],
-          dictOptionLabel: [
-            { required: true, message: "请输入值", trigger: "none" }
-          ]
-        },
-      }
-    }
   });
   const dictOptionTableDataNeedDelete = ref([]);
   const dictOptionTableDataFilter = computed(() => dictOptionFormData.dictOptionTableData.slice((dictOptionPageData.pageNum - 1) * dictOptionPageData.pageSize, dictOptionPageData.pageNum * dictOptionPageData.pageSize));
@@ -272,13 +245,6 @@ export default {
           dialogVisible.value = false;
           searchData();
         });
-      } else {
-        refMap.addDictFormRef.clearValidate();
-        for (let field in fields) {
-          refMap[field].validateState = "error";
-          ElMessage.warning(fields[field][0].message);
-          return;
-        }
       }
     });
   }
@@ -353,7 +319,7 @@ export default {
     });
   }
   const confirmDictOption = () => {
-    refMap.addDictOptionFormRef.validate(async (valid, fields) => {
+    refMap.addDictOptionFormRef.validate((valid) => {
       if (valid) {
         const insert = [];
         const update = [];
@@ -370,16 +336,6 @@ export default {
         }).finally(() => {
           drawerVisible.value = false;
         });
-      } else {
-        refMap.addDictOptionFormRef.clearValidate()
-        for (let field in fields) {
-          let index = field.match(/^dictOptionTableData.(\d+)./)?.[1]
-          if (index) dictOptionPageData.pageNum = Math.ceil((+index + 1) / dictOptionPageData.pageSize)
-          await nextTick();
-          refMap[field].validateState = "error";
-          ElMessage.warning(fields[field][0].message);
-          // refMap[field].$el.scrollIntoView({ block: "center", behavior: "smooth" });
-        }
       }
     });
   }

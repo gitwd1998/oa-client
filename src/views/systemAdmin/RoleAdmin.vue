@@ -1,7 +1,7 @@
 <template>
   <div class="scroll-wrap">
     <div class="search-wrap">
-      <el-form ref="searchFormRef" :model="searchFormData" inline label-width="auto" label-suffix=":">
+      <el-form ref="searchFormRef" :model="searchFormData" inline>
         <el-form-item label="角色标识" prop="roleKey">
           <el-input v-model="searchFormData.roleKey" clearable />
         </el-form-item>
@@ -49,15 +49,15 @@
       />
     </div>
     <el-dialog v-model="dialogVisible" :title="dialogTitle">
-      <el-form ref="addFormRef" :model="addFormData" :rules="addFormRules" label-width="auto" label-suffix=":">
-        <el-form-item ref="roleKey" label="角色标识" prop="roleKey">
+      <el-form ref="addFormRef" :model="addFormData" :rules="addFormRules">
+        <el-form-item label="角色标识" prop="roleKey">
           <el-input v-model="addFormData.roleKey" :disabled="!!addFormData.roleId" clearable maxlength="100" show-word-limit />
         </el-form-item>
-        <el-form-item ref="roleName" label="角色名称" prop="roleName">
+        <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="addFormData.roleName" clearable maxlength="100" show-word-limit />
         </el-form-item>
         {{ addFormData.roleMenu }}
-        <el-form-item ref="roleMenu" label="角色菜单" prop="roleMenu">
+        <el-form-item label="角色菜单" prop="roleMenu">
           <el-tree-select
             ref="roleMenuRef"
             style="width: 100%"
@@ -72,7 +72,7 @@
             }"
           />
         </el-form-item>
-        <el-form-item ref="roleState" label="启用状态" prop="roleState">
+        <el-form-item label="启用状态" prop="roleState">
           <el-radio-group v-model="addFormData.roleState">
             <el-radio v-for="option in dict.values.status" :key="option.value" :label="option.value">{{ option.label }}</el-radio>
           </el-radio-group>
@@ -123,9 +123,6 @@ export default {
         ],
         roleMenu: [
           { required: true, message: '请选择菜单', trigger: 'none' }
-        ],
-        roleState: [
-          { required: true, message: '请选择角色状态', trigger: 'none' }
         ]
       },
       menuList: []
@@ -203,6 +200,7 @@ export default {
       this.addFormData = {
         roleId: '',
         roleKey: '',
+        roleName: '',
         roleMenu: [],
         roleState: '1'
       }
@@ -215,7 +213,7 @@ export default {
       this.dialogVisible = true
     },
     confrimMenu() {
-      this.$refs.addFormRef.validate((valid, fields) => {
+      this.$refs.addFormRef.validate((valid) => {
         if (valid) {
           console.log(this.addFormDataFormat);
           // roleSave(this.addFormData).then((res) => {
@@ -226,13 +224,6 @@ export default {
           //   this.dialogVisible = false
           //   this.searchData()
           // })
-        } else {
-          this.$refs.addFormRef.clearValidate()
-          for (let field in fields) {
-            this.$refs[field].validateState = 'error'
-            this.$message.warning(fields[field][0].message)
-            return
-          }
         }
       })
     },

@@ -13,18 +13,34 @@ ElSelect.props['placeholder'] = {
 }
 
 // ElForm
-ElForm.props['show-message'] = {
-  type: Boolean,
-  default: false
+ElForm.props['label-width'] = {
+  type: String,
+  default: 'auto'
 }
-
+ElForm.props['label-suffix'] = {
+  type: String,
+  default: ':'
+}
+ElForm.props['status-icon'] = {
+  type: Boolean,
+  default: true
+}
+ElForm.props['scroll-to-error'] = {
+  type: Boolean,
+  default: true
+}
+ElForm.props['scroll-into-view-options'] = {
+  type: Object,
+  default: {
+    behavior: 'smooth'
+  }
+}
 
 // ElTable
 ElTable.props['border'] = {
   type: Boolean,
-  default: true
+  default: false
 }
-
 
 // ElPagination
 ElPagination.props['background'] = {
@@ -69,6 +85,10 @@ ElDialog.props['append-to-body'] = {
 
 
 // ElDrawer
+ElDrawer.props['size'] = {
+  type: Number,
+  default: 640
+}
 ElDrawer.props['append-to-body'] = {
   type: Boolean,
   default: true

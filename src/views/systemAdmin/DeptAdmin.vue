@@ -1,7 +1,7 @@
 <template>
   <div class="scroll-wrap">
     <div class="search-wrap">
-      <el-form ref="searchFormRef" :model="searchFormData" inline label-width="auto" label-suffix=":">
+      <el-form ref="searchFormRef" :model="searchFormData" inline>
         <el-form-item label="菜单标识" prop="menuKey">
           <el-input v-model="searchFormData.menuKey" clearable />
         </el-form-item>
@@ -72,33 +72,33 @@
       />
     </div>
     <el-dialog v-model="dialogVisible" :title="dialogTitle">
-      <el-form ref="addFormRef" :model="addFormData" :rules="addFormRules" label-width="auto" label-suffix=":">
-        <el-form-item ref="menuKey" label="菜单标识" prop="menuKey">
+      <el-form ref="addFormRef" :model="addFormData" :rules="addFormRules">
+        <el-form-item label="菜单标识" prop="menuKey">
           <el-input v-model="addFormData.menuKey" :disabled="!!addFormData.menuId" clearable maxlength="100" show-word-limit />
         </el-form-item>
-        <el-form-item ref="menuName" label="菜单名称" prop="menuName">
+        <el-form-item label="菜单名称" prop="menuName">
           <el-input v-model="addFormData.menuName" clearable maxlength="100" show-word-limit />
         </el-form-item>
-        <el-form-item ref="menuIcon" label="菜单图标" prop="menuIcon">
+        <el-form-item label="菜单图标" prop="menuIcon">
           <icon-select v-model="addFormData.menuIcon" clearable />
           <el-icon v-if="addFormData.menuIcon" style="margin: 0 10px;">
             <component :is="addFormData.menuIcon" />
           </el-icon>
         </el-form-item>
-        <el-form-item ref="menuType" label="菜单类型" prop="menuType">
+        <el-form-item label="菜单类型" prop="menuType">
           <el-radio-group v-model="addFormData.menuType">
             <el-radio v-for="option in dict.values.menu_type" :key="option.value" :label="option.value">{{ option.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item ref="menuPath" label="菜单地址" prop="menuPath">
+        <el-form-item label="菜单地址" prop="menuPath">
           <el-input v-model="addFormData.menuPath" clearable maxlength="1000" show-word-limit />
         </el-form-item>
-        <el-form-item ref="menuVisible" label="可见状态" prop="menuVisible">
+        <el-form-item label="可见状态" prop="menuVisible">
           <el-radio-group v-model="addFormData.menuVisible">
             <el-radio v-for="option in dict.values.visible" :key="option.value" :label="option.value">{{ option.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item ref="menuState" label="启用状态" prop="menuState">
+        <el-form-item label="启用状态" prop="menuState">
           <el-radio-group v-model="addFormData.menuState">
             <el-radio v-for="option in dict.values.status" :key="option.value" :label="option.value">{{ option.label }}</el-radio>
           </el-radio-group>
@@ -160,12 +160,6 @@ export default {
         ],
         menuPath: [
           { required: true, message: "请输入菜单地址", trigger: "none" }
-        ],
-        menuVisible: [
-          { required: true, message: "请选择可见状态", trigger: "none" }
-        ],
-        menuState: [
-          { required: true, message: "请选择菜单状态", trigger: "none" }
         ]
       }
     }
@@ -305,7 +299,7 @@ export default {
     },
     confrimMenu() {
       console.log(this.addFormData, this.addFormData.menuId, this.addFormData.loadChild);
-      this.$refs.addFormRef.validate((valid, fields) => {
+      this.$refs.addFormRef.validate((valid) => {
         if (valid) {
           menuSave(this.addFormData).then((res) => {
             if (res.code === '000000') this.$message.success(res.message)
@@ -327,13 +321,6 @@ export default {
               }
             }
           })
-        } else {
-          this.$refs.addFormRef.clearValidate()
-          for (let field in fields) {
-            this.$refs[field].validateState = 'error'
-            this.$message.warning(fields[field][0].message)
-            return
-          }
         }
       })
     },

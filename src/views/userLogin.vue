@@ -1,18 +1,18 @@
 <template>
   <div class="user-login">
-    <el-form ref="addFormRef" :model="formData" :rules="formRules" label-width="auto" label-suffix=":" size="large" show-message>
+    <el-form ref="addFormRef" :model="formData" :rules="formRules" size="large" show-message>
       <div style="margin: 0 auto 10px; color: #fff; font-weight: bold; font-size: 24px; text-align: center;">OA 1.0</div>
-      <el-form-item ref="username" prop="username">
+      <el-form-item prop="username">
         <el-input v-model.trim="formData.username" prefix-icon="User" placeholder="账号" />
       </el-form-item>
-      <el-form-item ref="password" prop="password">
+      <el-form-item prop="password">
         <el-input v-model.trim="formData.password" show-password prefix-icon="Lock" placeholder="密码">
           <template #suffix>
             <el-button link icon="Refresh" @click.stop="formData.password = Math.random().toString(36).slice(-10)"></el-button>
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item ref="captcha" prop="captcha">
+      <el-form-item prop="captcha">
         <el-input v-model.trim="formData.captcha" maxlength="4" prefix-icon="Message" placeholder="验证码">
           <template #suffix>
             <el-icon v-if="loading" class="is-loading">
