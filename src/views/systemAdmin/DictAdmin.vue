@@ -11,11 +11,6 @@
         <el-form-item label="字典标签" prop="dictTag">
           <el-input v-model="searchFormData.dictTag" clearable />
         </el-form-item>
-        <el-form-item label="启用状态" prop="dictState">
-          <el-select v-model="searchFormData.dictState" clearable>
-            <el-option v-for="option in dict.values.status" :key="option.value" :label="option.label" :value="option.value" />
-          </el-select>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchData">搜索</el-button>
           <el-button @click="refMap.searchFormRef.resetFields()">重置</el-button>
@@ -26,7 +21,7 @@
       <el-button type="primary" @click="addDict">新增</el-button>
     </div>
     <div class="table-wrap">
-      <el-table :data="dictTableData" height="100%" @row-click="rowClick">
+      <el-table :data="dictTableData" height="100%" @filter-change="filterMethod" @row-click="rowClick">
         <el-table-column label="字典标识" prop="dictKey" />
         <el-table-column label="字典名称" prop="dictName" />
         <el-table-column label="标签" prop="dictTag">
@@ -34,7 +29,14 @@
             <el-tag v-if="row.dictTag">{{ row.dictTag }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="启用状态" prop="dictState" width="100" :formatter="(row) => dict.label.status[row.dictState]" />
+        <el-table-column
+          label="启用状态"
+          prop="dictState"
+          width="100"
+          :formatter="(row) => dict.label.status[row.dictState]"
+          column-key="dictState"
+          :filters="dict.values.status.map(item => ({ text: item.label, value: item.value }))"
+        />
         <el-table-column label="操作" width="80">
           <template #default="{ row }">
             <el-button link type="warning" icon="Edit" @click.stop="editDict(row)" />
@@ -216,6 +218,10 @@ export default {
     dictPageData.pageSize = 20;
     dictPageData.total = 0;
     queryDictList();
+  }
+  const filterMethod = (value) => {
+    searchFormData.dictState = value.dictState.length === 1 ? value.dictState[0] : ''
+    searchData()
   }
   const addDict = () => {
     dialogTitle.value = "新增字典"

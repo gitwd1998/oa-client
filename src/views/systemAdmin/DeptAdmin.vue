@@ -8,11 +8,6 @@
         <el-form-item label="菜单名称" prop="menuName">
           <el-input v-model="searchFormData.menuName" clearable />
         </el-form-item>
-        <el-form-item label="启用状态" prop="menuState">
-          <el-select v-model="searchFormData.menuState" clearable>
-            <el-option v-for="option in dict.values.status" :key="option.value" :label="option.label" :value="option.value" />
-          </el-select>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchData">搜索</el-button>
           <el-button @click="$refs.searchFormRef.resetFields()">重置</el-button>
@@ -32,6 +27,7 @@
         :load="querySubTableData"
         :span-method="spanMethod"
         @expand-change="expandChange"
+        @filter-change="filterMethod"
       >
         <el-table-column label="菜单名称" prop="menuName">
           <template #default="{ row }">
@@ -49,7 +45,11 @@
         <el-table-column label="菜单类型" prop="menuType" width="100" :formatter="(row) => dict.label.menu_type[row.menuType]" />
         <el-table-column label="菜单地址" prop="menuPath" />
         <el-table-column label="显示状态" prop="menuVisible" width="100" :formatter="(row) => dict.label.visible[row.menuVisible]" />
-        <el-table-column label="启用状态" prop="menuState" width="100" :formatter="(row) => dict.label.status[row.menuState]" />
+        <el-table-column label="启用状态" prop="menuState" width="100" column-key="menuState" :filters="dict.values.status.map(item => ({ text: item.label, value: item.value }))">
+          <template #default="{ row }">
+            <el-tag :type="['danger', 'success'][row.menuState]">{{ dict.label.status[row.menuState] }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="120">
           <template #default="{ row }">
             <el-button link type="primary" icon="Plus" @click.stop="addSubData(row)" />
@@ -243,6 +243,10 @@ export default {
         total: 0
       }
       this.queryTableData()
+    },
+    filterMethod(value) {
+      this.searchFormData.menuState = value.menuState.length === 1 ? value.menuState[0] : ''
+      this.searchData()
     },
     expandChange(row, expanded) {
       if (!expanded) {

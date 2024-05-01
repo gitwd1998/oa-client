@@ -8,11 +8,6 @@
         <el-form-item label="用户名称" prop="userName">
           <el-input v-model="searchFormData.userName" clearable />
         </el-form-item>
-        <el-form-item label="启用状态" prop="userState">
-          <el-select v-model="searchFormData.userState" clearable>
-            <el-option v-for="option in dict.values.status" :key="option.value" :label="option.label" :value="option.value" />
-          </el-select>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchData">搜索</el-button>
           <el-button @click="$refs.searchFormRef.resetFields()">重置</el-button>
@@ -23,11 +18,15 @@
       <el-button type="primary" @click="addData">新增</el-button>
     </div>
     <div class="table-wrap">
-      <el-table ref="tableRef" :data="tableData" height="100%">
+      <el-table ref="tableRef" :data="tableData" height="100%" @filter-change="filterMethod">
         <el-table-column label="用户标识" prop="userKey" />
         <el-table-column label="用户名称" prop="userName" />
         <el-table-column label="用户密码" prop="password" />
-        <el-table-column label="启用状态" prop="userState" width="100" :formatter="(row) => dict.label.status[row.userState]" />
+        <el-table-column label="启用状态" prop="userState" width="100" column-key="userState" :filters="dict.values.status.map(item => ({ text: item.label, value: item.value }))">
+          <template #default="{ row }">
+            <el-tag :type="['danger', 'success'][row.userState]">{{ dict.label.status[row.userState] }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="80">
           <template #default="{ row }">
             <el-button link type="warning" icon="Edit" @click.stop="editData(row)" />
@@ -152,6 +151,10 @@ export default {
         total: 0
       }
       this.queryTableData()
+    },
+    filterMethod(value) {
+      this.searchFormData.userState = value.userState.length === 1 ? value.userState[0] : ''
+      this.searchData()
     },
     addData() {
       this.dialogTitle = '新增用户'

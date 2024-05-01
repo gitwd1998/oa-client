@@ -8,11 +8,6 @@
         <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="searchFormData.roleName" clearable />
         </el-form-item>
-        <el-form-item label="启用状态" prop="roleState">
-          <el-select v-model="searchFormData.roleState" clearable>
-            <el-option v-for="option in dict.values.status" :key="option.value" :label="option.label" :value="option.value" />
-          </el-select>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchData">搜索</el-button>
           <el-button @click="$refs.searchFormRef.resetFields()">重置</el-button>
@@ -23,10 +18,14 @@
       <el-button type="primary" @click="addData">新增</el-button>
     </div>
     <div class="table-wrap">
-      <el-table ref="tableRef" :data="tableData" height="100%">
+      <el-table ref="tableRef" :data="tableData" height="100%" @filter-change="filterMethod">
         <el-table-column label="角色标识" prop="roleKey" />
         <el-table-column label="角色名称" prop="roleName" />
-        <el-table-column label="启用状态" prop="roleState" width="100" :formatter="(row) => dict.label.status[row.roleState]" />
+        <el-table-column label="启用状态" prop="roleState" width="100" column-key="roleState" :filters="dict.values.status.map(item => ({ text: item.label, value: item.value }))">
+          <template #default="{ row }">
+            <el-tag :type="['danger', 'success'][row.roleState]">{{ dict.label.status[row.roleState] }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="120">
           <template #default="{ row }">
             <el-button link type="primary" icon="Plus" @click.stop="addSubData(row)" />
@@ -194,6 +193,10 @@ export default {
         total: 0
       }
       this.queryTableData()
+    },
+    filterMethod(value) {
+      this.searchFormData.roleState = value.roleState.length === 1 ? value.roleState[0] : ''
+      this.searchData()
     },
     addData() {
       this.dialogTitle = '新增角色'
