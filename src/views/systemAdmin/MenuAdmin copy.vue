@@ -62,9 +62,8 @@
         </template>
       </el-table>
     </div>
-    <div class="pagination-wrap">
+    <div class="pagination-wrap" v-if="pageData.total">
       <my-pagination
-        v-if="pageData.total"
         v-model:current-page="pageData.pageNum"
         v-model:page-size="pageData.pageSize"
         :total="pageData.total"

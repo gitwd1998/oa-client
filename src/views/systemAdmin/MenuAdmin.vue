@@ -45,7 +45,13 @@
         <el-table-column label="菜单类型" prop="menuType" width="100" :formatter="(row) => dict.label.menu_type[row.menuType]" />
         <el-table-column label="菜单地址" prop="menuPath" />
         <el-table-column label="显示状态" prop="menuVisible" width="100" :formatter="(row) => dict.label.visible[row.menuVisible]" />
-        <el-table-column label="启用状态" prop="menuState" width="100" column-key="menuState" :filters="dict.values.status.map(item => ({ text: item.label, value: item.value }))">
+        <el-table-column
+          label="启用状态"
+          prop="menuState"
+          width="100"
+          column-key="menuState"
+          :filters="dict.values.status.map(item => ({ text: item.label, value: item.value }))"
+        >
           <template #default="{ row }">
             <el-tag :type="['danger', 'success'][row.menuState]">{{ dict.label.status[row.menuState] }}</el-tag>
           </template>
@@ -62,9 +68,8 @@
         </template>
       </el-table>
     </div>
-    <div class="pagination-wrap">
+    <div class="pagination-wrap" v-if="pageData.total">
       <my-pagination
-        v-if="pageData.total"
         v-model:current-page="pageData.pageNum"
         v-model:page-size="pageData.pageSize"
         :total="pageData.total"

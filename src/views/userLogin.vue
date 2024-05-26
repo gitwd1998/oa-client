@@ -6,16 +6,12 @@
         <el-input v-model.trim="formData.username" prefix-icon="User" placeholder="账号" />
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model.trim="formData.password" show-password prefix-icon="Lock" placeholder="密码">
-          <template #suffix>
-            <el-button link icon="Refresh" @click.stop="formData.password = Math.random().toString(36).slice(-10)"></el-button>
-          </template>
-        </el-input>
+        <el-input v-model.trim="formData.password" show-password prefix-icon="Lock" placeholder="密码" />
       </el-form-item>
       <el-form-item prop="captcha">
         <el-input v-model.trim="formData.captcha" maxlength="4" prefix-icon="Message" placeholder="验证码">
           <template #suffix>
-            <el-icon v-if="loading" class="is-loading">
+            <el-icon v-if="captchaLoading" class="is-loading">
               <Loading />
             </el-icon>
             <img v-else class="captcha-img" :src="captchaImgSrc" @click="getCaptcha">
@@ -23,7 +19,7 @@
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button style="width: 100%" type="primary" @click="handleLogin">登录</el-button>
+        <el-button style="width: 100%" type="primary" :loading="loginLoading" @click="userLogin">登录</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -36,11 +32,12 @@ export default {
   name: 'UserLogin',
   data() {
     return {
-      loading: false,
+      captchaLoading: false,
+      loginLoading: false,
       captchaImgSrc: '',
       formData: {
-        username: '',
-        password: '',
+        username: '张三',
+        password: 'zhangsan',
         captcha: ''
       },
       formRules: {
@@ -61,16 +58,17 @@ export default {
   },
   methods: {
     getCaptcha() {
-      this.loading = true
+      this.captchaLoading = true
       captcha().then(res => {
         if (res.size) this.captchaImgSrc = URL.createObjectURL(res)
       }).finally(() => {
-        this.loading = false
+        this.captchaLoading = false
       })
     },
-    handleLogin() {
+    userLogin() {
       this.$refs.addFormRef.validate((valid) => {
         if (valid) {
+          this.loginLoading = true
           userLogin(this.formData).then(({ code, data }) => {
             if (code === '000000') {
               localStorage.setItem('Authorization', data)
@@ -84,8 +82,10 @@ export default {
             } else {
               this.getCaptcha()
             }
-          }).catch(err => {
+          }).catch((err) => {
             console.error(err)
+          }).finally(() => {
+            this.loginLoading = false
           })
         }
       })

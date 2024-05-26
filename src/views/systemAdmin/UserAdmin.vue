@@ -22,7 +22,13 @@
         <el-table-column label="用户标识" prop="userKey" />
         <el-table-column label="用户名称" prop="userName" />
         <el-table-column label="用户密码" prop="password" />
-        <el-table-column label="启用状态" prop="userState" width="100" column-key="userState" :filters="dict.values.status.map(item => ({ text: item.label, value: item.value }))">
+        <el-table-column
+          label="启用状态"
+          prop="userState"
+          width="100"
+          column-key="userState"
+          :filters="dict.values.status.map(item => ({ text: item.label, value: item.value }))"
+        >
           <template #default="{ row }">
             <el-tag :type="['danger', 'success'][row.userState]">{{ dict.label.status[row.userState] }}</el-tag>
           </template>
@@ -38,9 +44,8 @@
         </template>
       </el-table>
     </div>
-    <div class="pagination-wrap">
+    <div class="pagination-wrap" v-if="pageData.total">
       <my-pagination
-        v-if="pageData.total"
         v-model:current-page="pageData.pageNum"
         v-model:page-size="pageData.pageSize"
         :total="pageData.total"

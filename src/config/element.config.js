@@ -21,10 +21,6 @@ ElForm.props['label-suffix'] = {
   type: String,
   default: ':'
 }
-ElForm.props['status-icon'] = {
-  type: Boolean,
-  default: true
-}
 ElForm.props['scroll-to-error'] = {
   type: Boolean,
   default: true

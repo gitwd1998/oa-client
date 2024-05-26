@@ -33,10 +33,13 @@
           label="启用状态"
           prop="dictState"
           width="100"
-          :formatter="(row) => dict.label.status[row.dictState]"
           column-key="dictState"
           :filters="dict.values.status.map(item => ({ text: item.label, value: item.value }))"
-        />
+        >
+          <template #default="{ row }">
+            <el-tag :type="['danger', 'success'][row.dictState]">{{ dict.label.status[row.dictState] }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="80">
           <template #default="{ row }">
             <el-button link type="warning" icon="Edit" @click.stop="editDict(row)" />
@@ -48,9 +51,8 @@
         </template>
       </el-table>
     </div>
-    <div class="pagination-wrap">
+    <div class="pagination-wrap" v-if="dictPageData.total">
       <my-pagination
-        v-if="dictPageData.total"
         v-model:current-page="dictPageData.pageNum"
         v-model:page-size="dictPageData.pageSize"
         :total="dictPageData.total"
@@ -123,19 +125,17 @@
       </el-form-item>
     </el-form>
     <template #footer>
-      <div style="display: flex; justify-content: space-between;">
-        <div>
-          <my-pagination
-            v-if="dictOptionFormData.dictOptionTableData.length"
-            v-model:current-page="dictOptionPageData.pageNum"
-            v-model:page-size="dictOptionPageData.pageSize"
-            :total="dictOptionFormData.dictOptionTableData.length"
-          />
-        </div>
-        <div>
-          <el-button @click="drawerVisible = false">取消</el-button>
-          <el-button type="primary" @click="confirmDictOption">确定</el-button>
-        </div>
+      <div style="display: flex; align-items: center; justify-content: flex-end;">
+        <my-pagination
+          v-if="dictOptionFormData.dictOptionTableData.length"
+          style="flex: 1;"
+          v-model:current-page="dictOptionPageData.pageNum"
+          v-model:page-size="dictOptionPageData.pageSize"
+          :pager-count="3"
+          :total="dictOptionFormData.dictOptionTableData.length"
+        />
+        <el-button @click="drawerVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmDictOption">确定</el-button>
       </div>
     </template>
   </el-drawer>

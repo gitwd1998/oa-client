@@ -21,7 +21,13 @@
       <el-table ref="tableRef" :data="tableData" height="100%" @filter-change="filterMethod">
         <el-table-column label="角色标识" prop="roleKey" />
         <el-table-column label="角色名称" prop="roleName" />
-        <el-table-column label="启用状态" prop="roleState" width="100" column-key="roleState" :filters="dict.values.status.map(item => ({ text: item.label, value: item.value }))">
+        <el-table-column
+          label="启用状态"
+          prop="roleState"
+          width="100"
+          column-key="roleState"
+          :filters="dict.values.status.map(item => ({ text: item.label, value: item.value }))"
+        >
           <template #default="{ row }">
             <el-tag :type="['danger', 'success'][row.roleState]">{{ dict.label.status[row.roleState] }}</el-tag>
           </template>
@@ -38,9 +44,8 @@
         </template>
       </el-table>
     </div>
-    <div class="pagination-wrap">
+    <div class="pagination-wrap" v-if="pageData.total">
       <my-pagination
-        v-if="pageData.total"
         v-model:current-page="pageData.pageNum"
         v-model:page-size="pageData.pageSize"
         :total="pageData.total"
