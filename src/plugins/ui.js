@@ -1,4 +1,6 @@
-import { ElDialog, ElDrawer, ElForm, ElInput, ElPagination, ElSelect, ElTable } from 'element-plus';
+import ElementPlus, { ElDialog, ElDrawer, ElForm, ElInput, ElPagination, ElSelect, ElTable } from 'element-plus'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import 'element-plus/dist/index.css'
 
 // ElInput
 ElInput.props['placeholder'] = {
@@ -104,4 +106,11 @@ ElDrawer.props['close-on-press-escape'] = {
 ElDrawer.props['append-to-body'] = {
   type: Boolean,
   default: true
+}
+
+export default (app) => {
+  app.use(ElementPlus)
+  for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+  }
 }

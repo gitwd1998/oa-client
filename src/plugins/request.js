@@ -10,7 +10,6 @@ const service = axios.create({
 service.interceptors.request.use(
   (request) => {
     const Authorization = localStorage.getItem('Authorization') || ''
-    if (!Authorization) router.replace('/login')
     request.headers['Authorization'] = Authorization
     // request.headers['Current-Url'] = location.href
     // request.headers['If-Modified-Since'] = '0'
